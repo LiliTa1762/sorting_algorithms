@@ -1,47 +1,55 @@
 #include "sort.h"
 
 /**
- * qs - function to sort with recursion
+ * partition - function to sort with recursion
  * @array: array to sort
  * @start: left limit
  * @end: right limit
+ * @size: size of the array to sort
  * Return: void
  */
-void qs(int array[], int start, int end)
+int partition(int array[], int start, int end, size_t size)
 {
-	int left, right, temp, pivot;
-	/* size_t size = sizeof(array); */
+	int pivot, part, temp, i;
 
-	left = start;
-	right = end;
-	pivot = array[(left + right) / 2];
+	i = start;
+	pivot = array[end];
+	part = start - 1;
 
-	do {
-		while (array[left] < pivot && left < end)
-		left++;
-
-		while (pivot < array[right] && right > start)
-		right--;
-
-		if (left <= right)
+	while (i <= end)
+	{
+		if (array[i] <= pivot)
 		{
-			temp = array[left];
-			array[left] = array[right];
-			array[right] = temp;
-			left++;
-			right--;
+			part++;
+			if (part != i)
+			{
+				temp = array[part];
+				array[part] = array[i];
+				array[i] = temp;
+				print_array(array, size);
+			}
 		}
-	/* print_array(array, size); */
+		i++;
 	}
+	return (part);
+}
 
-	while (left <= right);
-	if (start < right)
+/**
+ * v_sort - function to validate the positions
+ * @array: array to sort
+ * @start: left limit
+ * @end: right limit
+ * @size: size of the array to sort
+ * Return: void
+ */
+void v_sort(int array[], int start, int end, size_t size)
+{
+	if (start < end)
 	{
-		qs(array, start, right);
-	}
-	if (end > left)
-	{
-		qs(array, left, end);
+		int pi = partition(array, start, end, size);
+
+		v_sort(array, start, pi - 1, size);
+		v_sort(array, pi + 1, end, size);
 	}
 }
 
@@ -53,6 +61,14 @@ void qs(int array[], int start, int end)
  */
 void quick_sort(int *array, size_t size)
 {
-	qs(array, 0, size - 1);
-	print_array(array, size);
+	int start = 0;
+	int end = size - 1;
+
+	if (!array || !size)
+		return;
+
+	else
+	{
+		v_sort(array, start, end, size);
+	}
 }
